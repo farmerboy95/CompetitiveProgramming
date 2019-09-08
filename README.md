@@ -1,2 +1,2 @@
-# OnlineCoaching
-Online Coaching 
+# CompetitiveProgramming
+Competitive Programming
