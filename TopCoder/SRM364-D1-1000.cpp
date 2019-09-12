@@ -6,9 +6,10 @@
         the gift that would not be chosen by the last person and has minimum unhappiness number.
         - So that we can easily get the last status of gifts after all swaps.
         - Then I realized that one never trade with a person who has the turn after him, 
-        because that person can do swapping afterwards.
+        instead he would find someone who did trading before to swap.
         - First status and last status turn out to form a graph (a group of swapping), for each person i, 
         I can use that graph to find a person j (j <= i) who I should trade gift.
+        - Proof: https://apps.topcoder.com/forums/?module=Thread&threadID=586800&start=0&mc=19#860776
 */
 
 #include <bits/stdc++.h>
