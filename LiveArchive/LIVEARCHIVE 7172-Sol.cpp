@@ -19,8 +19,8 @@
         O(k) in this case
 
         - It seems to be O(n*k*k) after all, but why does it pass the time limit?
-        - We can prove that there are at most n/4 nodes that have both left child and sibling
-        => O(n*k*k/4), which can pass the time limit
+        - We can prove that there are at most n/2 nodes that have both left child and sibling, also k would be reduced quickly while passing nodes
+        => O(n*k*k/2), which can pass the time limit
 */
 
 #include <bits/stdc++.h>
