@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Status: Pending
+    Status: AC
     Idea:
         - If there are i and j that a[i], a[j] >= 10 => YES
         - Because we can generate all number % 11 when we choose x digits i and 10-x digits j
@@ -47,13 +47,13 @@ void printSpecialCase(int n, int num, int vt) {
     FOR(i,0,360) {
         FOR(j,0,10) {
             if (dp[9][i][j]) {
-                int need = i - 180 - n % 2;
+                int need = -(i - 180 - n % 2);
                 if ((num + need) % 2) continue;
                 int pos = (num + need) / 2;
                 int neg = (num - need) / 2;
                 if (pos < 0 || pos > num) continue;
                 if (neg < 0 || neg > num) continue;
-                int e = (ll) (pos - neg) * vt % 11;
+                int e = (pos - neg) * vt % 11;
                 if (e < 0) e = e + 11;
                 if ((j + e) % 11 == 0) {
                     cout << "YES\n";
