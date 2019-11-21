@@ -21,7 +21,7 @@
         - Now we can use dp to find number of graphs with size i
             + dp[i] += dp[i-j] * dp2[j] * C[n-(i-j)-1][j-1] (we fix one node in this component to avoid duplicates)
         - Result = dp[N]
-        - Complexity O(N^2)
+        - Complexity O(N^3)
 */
  
 #include <bits/stdc++.h>
