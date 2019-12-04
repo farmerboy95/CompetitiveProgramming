@@ -3,7 +3,11 @@
     Status: AC
     Idea:
         - From "Looking for a challenge" book
-
+        - https://github.com/farmerboy95/CompetitiveProgramming/blob/master/POI/POI%2005-Parties-Page1.jpg
+        - https://github.com/farmerboy95/CompetitiveProgramming/blob/master/POI/POI%2005-Parties-Page2.jpg
+        - https://github.com/farmerboy95/CompetitiveProgramming/blob/master/POI/POI%2005-Parties-Page3.jpg
+        - https://github.com/farmerboy95/CompetitiveProgramming/blob/master/POI/POI%2005-Parties-Page4.jpg
+        - https://github.com/farmerboy95/CompetitiveProgramming/blob/master/POI/POI%2005-Parties-Page5.jpg
 */
  
 #include <bits/stdc++.h>
