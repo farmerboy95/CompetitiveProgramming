@@ -181,7 +181,7 @@ int main() {
     FOR(i,1,n) {
         int coeff = get(a[i]-1);
 
-        // x = x / n
+        // x = x / now
         mainPart = mainPart * getInv(now) % m;
         updateCntPrime(now, -1);
 
