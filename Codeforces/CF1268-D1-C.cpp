@@ -1,7 +1,19 @@
 /*
     Author: Nguyen Tan Bao
-    Status:
+    Status: AC
     Idea:
+        - We consider each number from 1 to n, one by one
+        - For example, we have number from 1 to k, each number in one position. We consider
+        them from left to right (p1, p2, p3, ..., pk)
+        - Easily see that we should focus them on the median of this sequence
+        - Let the median is px, consider p[i] to the right of px, number of moves required
+        to move p[x+1] to p[n] to be on the right of px is 
+            + R = sum(p[x+1] to p[n]) - (x+1 + x+2 + ... + n) - (n - (x+1) + 1) * px
+        - Similarly, consider p[i] to the left of px
+            + L = (i-1) * px - (1 + 2 + ... + i-1) - sum(p[1] to p[x-1])
+        - Now all the numbers needed are close together but they are not in order yet
+        => Result = L + R + number of inversion of the sequence
+        - Easily find out L, R and number of inversion using Fenwick Tree
 */
  
 #include "bits/stdc++.h"
@@ -91,11 +103,8 @@ int main() {
         }
         int x = cuoi;
 
-        // cout << x << ' ' << cntInv << "\n";
-
         ll sumLeft = getSum(x-1), sumRight = sumPos - getSum(x);
         ll res = sumRight - sumLeft;
-        // cout << sumLeft << ' ' << sumRight << endl;
         int v = now / 2, u = now - v - 1;
         res -= (ll) x * (u-v);
         res += cntInv - calc(u) - calc(v);
