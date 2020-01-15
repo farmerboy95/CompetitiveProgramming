@@ -1,3 +1,2 @@
 # CompetitiveProgramming
 Competitive Programming
-farmerboy
