@@ -2,6 +2,9 @@
     Author: Nguyen Tan Bao
     Status: AC
     Idea: http://codeforces.com/blog/entry/57605
+        - More or less like this solution: http://codeforces.com/contest/922/submission/35055961
+        - Basically pure backtracking, prioritize adding current number into the list
+        and then remove numbers from n.
 */
  
 #include <bits/stdc++.h>
