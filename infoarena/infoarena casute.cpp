@@ -8,7 +8,7 @@
         - Then for each node x, we bfs to find all heights that u can reach and save them into
         an array named f[x] or something.
         - Finally, we consider all pairs i, j (i < j), find out the LCA of each pair and calculate
-        the result. (O(n^2))
+        the result. (O(n^2) for this part only)
         - But how to find LCA quickly? Or quickly enough?
         - If array f[x] is a boolean array, we can only put f[x][k] = 1 if we can reach height k
         from x and 0 otherwise. So it seems that this array f[x] is a binary representation of 
