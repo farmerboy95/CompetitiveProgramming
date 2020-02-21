@@ -1,6 +1,7 @@
 /*
     Author: Nguyen Tan Bao
     Status: AC
+    Statement: Given a DAG with n nodes and m edges, find the LCA for all pairs of distinct nodes
     Idea:
         - First, compress all h[i] into numbers from 0 to n-1 (the difference in height does not
         really matter in this problem)
