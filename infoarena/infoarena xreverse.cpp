@@ -13,7 +13,7 @@
         => So it takes O(n * k^2 * 9) overall => TLE
         - Hmm... What if we have dp[n] and dp[m], can we create dp[n+m]? YES, WE CAN.
         - So we use divide and conquer to solve this problem: dp[n] = merge(dp[n/2], dp[n/2]),
-        we may need to merge one more time with dp[1] if n is odd.
+        we may need to merge one more time with dp[1] if n is odd (This is NOT matrix multiplication)
         - The merging part is somewhat the same as how we move one step forward.
         - It takes about O(k^4) to merge, so overall the complexity is O(k^4 * logn)
 */
