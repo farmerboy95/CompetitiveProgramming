@@ -99,5 +99,23 @@
           "}"
         ],
         "description": "Binary Exponentiation"
+    },
+    "Extended Euclid Algorithm": {
+        "prefix": "zzExtendedEuclid",
+        "body": [
+            "int extendedEuclid(int a, int b, int &x, int &y) {",
+            "    if (b == 0) {",
+            "        x = 1;",
+            "        y = 0;",
+            "        return a;",
+            "    }",
+            "    int X1, Y1;",
+            "    int d = extendedEuclid(b, a % b, X1, Y1);",
+            "    x = Y1;",
+            "    y = X1 - Y1 * (a / b);",
+            "    return d;",
+            "}"
+        ],
+        "description": "Extended Euclid Algorithm"
     }
 }
