@@ -49,6 +49,8 @@ int getH(int l, int r) {
 // that can be placed inside the border (inclusive) and above the horizontal line (exclusive)
 int solve(int l, int r, int x) {
     if (l > r) return 0;
+    // use pos[x] instead of x because if we consider x+1 that there are no points that have y = x+1 then
+    // the result would still be the same, this would reduce the number of states.
     if (dp[l][r][pos[x]] != -1) return dp[l][r][pos[x]];
     // some special cases
     if (b[l].SE <= x) return dp[l][r][pos[x]] = solve(l+1, r, x);
