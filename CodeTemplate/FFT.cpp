@@ -60,6 +60,9 @@ vcd fft(const vcd &a) {
         // next depth
         vcd ncur(n);
 
+        // rstep = radian step
+        // so for length len, we need len roots of unity, w(len * 2) ^ k, 0 <= k <= len-1
+        // in other words, we consider w on one half of the circle
         int rstep = SZ(roots) / (len * 2);
         for (int pdest = 0; pdest < n;) {
             int p1 = pdest;
@@ -104,8 +107,10 @@ int main()
     while ((1<<k) < SZ(a)) k++;
     while (SZ(a) < (1<<k)) a.push_back(0);
 
-    // FFT(x(i=0,1,2,...n/2−1)) = FFT(x(i=0,2,4,...n−2)) + w(n)^i * FFT(x(i=1,3,5...n−1))
-    // FFT(x(i=n/2,n/2+1,n/2+2,...n−1)) = FFT(x(i=0,2,4,...n−2)) − w(n)^i * FFT(x(i=1,3,5...n−1))
+    // I=0,1,2,...n/2−1
+    // FFT(x(i=0,1,2,...n/2−1)) = FFT(x(i=0,2,4,...n−2)) + w(n)^I * FFT(x(i=1,3,5...n−1))
+    // FFT(x(i=n/2,n/2+1,n/2+2,...n−1)) = FFT(x(i=0,2,4,...n−2)) − w(n)^I * FFT(x(i=1,3,5...n−1))
+    // => take roots of unity on one half of the circle
 
     vcd res = fft(a);
     FOR(i,0,SZ(a)-1) printf("%.4lf %.4lf\n", res[i].real(), res[i].imag());
