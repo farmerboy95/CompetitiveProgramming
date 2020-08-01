@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/144772812246562/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1b/problems/A
     Status: AC
     Idea:
         - Strong implementation problem. Need to find way to make it as short as possible.

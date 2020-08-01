@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/102490243159137/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1b/problems/C
     Status: AC
     Idea:
         - Note that secret <= 10^7 as in the function, we modulo 10^7+1

@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/100623926681599/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1a/problems/C
     Status: AC
     Idea:
         - We are going to calculate the number of ways one's correct guess is exactly k. Call it res[k]

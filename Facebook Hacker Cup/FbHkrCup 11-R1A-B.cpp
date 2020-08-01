@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/158877957461506/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1a/problems/B
     Status: AC
     Idea:
         - Easily see that each button can be pressed at most once.

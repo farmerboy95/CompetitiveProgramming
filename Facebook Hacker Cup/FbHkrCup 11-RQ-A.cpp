@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/112921602098268/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/qualification-round/problems/A
     Status: AC
     Idea:
         - Find the number of A, B (A > B) that N = A^2 + B^2

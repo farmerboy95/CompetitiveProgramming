@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/172875359424547/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1c/problems/A
     Status: AC
     Idea:
         - Define res[i] = x if i is x-factorful number.

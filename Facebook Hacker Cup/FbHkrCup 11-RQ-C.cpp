@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/188558297823727/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/qualification-round/problems/C
     Status: AC
     Idea:
         - Let dp[mask] = the lexicographically smallest string formed by the words in the mask

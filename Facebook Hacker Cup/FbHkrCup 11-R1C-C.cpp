@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/185328794823941/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1c/problems/C
     Status: AC
     Idea:
         - As the grid is small, we simply consider all cells, for each cell, we consider 4 direction,

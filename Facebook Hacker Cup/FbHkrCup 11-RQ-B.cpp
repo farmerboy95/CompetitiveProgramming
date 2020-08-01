@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/157960964217186/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/qualification-round/problems/B
     Status: AC (tested with some AC code, not AC-ed in the contest page)
     Idea:
         - Simulate the problem, consider each place to drop the ball, use dp to find the final probability of

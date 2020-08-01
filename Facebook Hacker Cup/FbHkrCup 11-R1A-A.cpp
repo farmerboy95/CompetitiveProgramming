@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/127561170642475/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1a/problems/A
     Status: AC
     Idea:
         - Note that two sequences are considered different if their lengths differ or there is at least 

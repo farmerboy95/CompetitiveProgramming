@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/143461485714593/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-2/problems/A
     Status: AC
     Idea:
         - Mainly from: https://aholzner.wordpress.com/2011/02/08/facebook-hacker-cup-round-2-problem-3-%E2%80%93-some-discussion/

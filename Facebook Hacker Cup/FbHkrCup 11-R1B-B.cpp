@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://www.facebook.com/hackercup/problem/145264445532318/
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2011/round-1b/problems/B
     Status: AC
     Idea:
         - The same as this: https://cp-algorithms.com/others/josephus_problem.html
