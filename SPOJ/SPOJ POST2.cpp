@@ -1,3 +1,14 @@
+/*
+    Author: Nguyen Tan Bao
+    Status: AC
+    Idea:
+        - Create polynomial A with A[i] = number of i in the input A
+        - Create polynomial B with B[i] = number of i in the input B
+        - Multiply A and B using FFT. Degree of each polynomial is 100000 (using offset)
+        - As the degree of the result is 200000, remember to extend the degree of A and B to 200000
+        - Finally, use the offset to get the result.
+*/
+
 #include <bits/stdc++.h>
 #define FI first
 #define SE second
@@ -21,7 +32,7 @@ typedef complex<ld> cd;
 typedef vector<cd> vcd;
 
 const ll MODBASE = 1000000007LL;
-const int MAXN = 2000010;
+const int MAXN = 100010;
 const int MAXM = 1000;
 const int MAXK = 16;
 const int MAXQ = 200010;
@@ -29,7 +40,7 @@ const int MAXQ = 200010;
 const ld PI = acos(-1);
 
 int n;
-vcd a;
+vcd a, b, fa, fb, fh, h;
 
 // only for sz(a) == 2^x
 vcd fft(const vcd &a) {
@@ -96,29 +107,44 @@ int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(NULL);
-    // input n and the polynomial a
     cin >> n;
-    FOR(i,0,n-1) {
+    int N = 100000, offset = N / 2;
+    a.resize(2*N+1, 0);
+    b.resize(2*N+1, 0);
+    FOR(i,1,n) {
         int x;
         cin >> x;
-        a.push_back(x);
+        a[x + offset] += cd(1);
+    }
+    FOR(i,1,n) {
+        int x;
+        cin >> x;
+        b[x + offset] += cd(1);
     }
 
-    // change size of a = 2^k
     int k = 0;
     while ((1<<k) < SZ(a)) k++;
     while (SZ(a) < (1<<k)) a.push_back(0);
 
-    // I=0,1,2,...n/2−1
-    // FFT(x(i=0,1,2,...n/2−1)) = FFT(x(i=0,2,4,...n−2)) + w(n)^I * FFT(x(i=1,3,5...n−1))
-    // FFT(x(i=n/2,n/2+1,n/2+2,...n−1)) = FFT(x(i=0,2,4,...n−2)) − w(n)^I * FFT(x(i=1,3,5...n−1))
-    // => take roots of unity on one half of the circle
+    k = 0;
+    while ((1<<k) < SZ(b)) k++;
+    while (SZ(b) < (1<<k)) b.push_back(0);
 
-    vcd res = fft(a);
-    FOR(i,0,SZ(a)-1) printf("%.4lf %.4lf\n", res[i].real(), res[i].imag());
-    printf("\n");
+    fa = fft(a);
+    fb = fft(b);
 
-    vcd fft_rev = fftRev(res);
-    FOR(i,0,SZ(a)-1) printf("%.4lf %.4lf\n", fft_rev[i].real(), fft_rev[i].imag());
+    fh.resize(SZ(fa));
+
+    FOR(i,0,SZ(a)-1) fh[i] = fa[i] * fb[i];
+    h = fftRev(fh);
+
+    ll res = 0;
+    FOR(i,1,n) {
+        int x;
+        cin >> x;
+        x += N;
+        res += (ll) (h[x].real() + EPS);
+    }
+    cout << res;
     return 0;
 }
