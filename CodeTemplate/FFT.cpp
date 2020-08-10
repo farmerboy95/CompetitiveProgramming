@@ -1,3 +1,6 @@
+// https://vnoi.info/wiki/algo/trick/FFT.md
+// https://codeforces.com/blog/entry/43499
+
 #include <bits/stdc++.h>
 #define FI first
 #define SE second
