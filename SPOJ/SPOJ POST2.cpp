@@ -143,7 +143,7 @@ int main()
         int x;
         cin >> x;
         x += N;
-        res += (ll) (h[x].real() + EPS);
+        res += (ll) (h[x].real() + 0.5);
     }
     cout << res;
     return 0;
