@@ -2,7 +2,7 @@
     Author: Nguyen Tan Bao
     Status: AC
     Idea:
-        - Mainly from https://codeforces.com/blog/entry/62602
+        - Mainly from https://codeforces.com/blog/entry/62602 (Radewoosh's Randomization Trick)
         - Complexity O(n * (m + log(q) * log(maxfuel)))
 */
 
