@@ -1,5 +1,6 @@
 /*
     Author: Nguyen Tan Bao
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-1/problems/A1
     Status: AC
     Idea:
         - We notice that the width of rooms is the same and small (W <= 20). So we can maintain

@@ -1,5 +1,6 @@
 /*
     Author: Nguyen Tan Bao
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-1/problems/A2
     Status: AC
     Idea:
         - Notice that H1 >= H2 >= ... >= HN. So we only need to care about starting points
@@ -94,7 +95,7 @@ ll handle() {
             p = (p - h[i] + MODBASE) % MODBASE;
             if (itVec[j]->SE == 0) {
                 // add width
-                p = (p + 2LL * (itVec[j]->FI - last));
+                p = (p + 2LL * (itVec[j]->FI - last)) % MODBASE;
             } else {
                 last = itVec[j]->FI;
             }

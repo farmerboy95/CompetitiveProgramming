@@ -1,5 +1,6 @@
 /*
     Author: Nguyen Tan Bao
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-1/problems/B
     Status: AC
     Idea:
         - It's easy to see that we can binary search the result, because the bigger the needed time
@@ -22,6 +23,7 @@
         - Then we choose the way that costs smaller time, update last after finding the last x and consider
         the next driver.
         - Finally, there should be no cluster left.
+        - Read more about issue here: https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-1/problems/B/solution
 */
 
 #include <bits/stdc++.h>
