@@ -1,5 +1,6 @@
 /*
     Author: Nguyen Tan Bao
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-1/problems/C
     Status: AC
     Idea:
         - The idea is quite simple, for each edge, we remove it, the tree is divided to 2 smaller
