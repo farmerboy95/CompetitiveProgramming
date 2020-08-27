@@ -1,6 +1,7 @@
 /*
     Author: Nguyen Tan Bao
     Status: AC
+    Statement: https://www.facebook.com/codingcompetitions/hacker-cup/2012/qualification-round/problems/C
     Idea:
         - Binary search the result as the greater the font is, the harder it could be put into 
         the billboard.
