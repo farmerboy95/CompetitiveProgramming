@@ -5,7 +5,13 @@
         - Reconstruct the tree using dp sibling technique
         - Let dp[u][K][p] is the minimum amount of money that we need to buy K goods in the subtree 
         of u, p = 0 means we cannot use coupon at u, otherwise p = 1
-        - Remember to add limit L, R in general case to make the complexity O(N^2)
+        - Remember to add limit L, R (use only possible range) in general case to make the complexity O(N^2)
+        - Proof: Initially you have the size of 1. When you get a subtree of size S you'll make a 
+        S * size transition and then you'll make size += S. On the first step, you'll pair the 
+        current vertex with all the vertices from the subtree. From the second step onwards, you'll 
+        pair the current vertex AND the already counted vertices with the vertices of the next subtree 
+        (the number of such pair is S * size). This means that you'll never count any pair twice and 
+        the complexity will be exactly the number of such pairs, or O(n^2)
 */
 
 #include <bits/stdc++.h>
