@@ -185,5 +185,43 @@
             "};"
         ],
         "description": "Disjoint Set Union"
+    },
+    "Static Range Sum": {
+        "prefix": "zzStaticRangeSum",
+        "body": [
+            "struct StaticRangeSum {",
+            "  public:",
+            "    // inits an original array and prefix sum array with size n",
+            "    StaticRangeSum() : _n(0) {}",
+            "    StaticRangeSum(int n) : _n(n), elements(n, 0), prefix_sums(n, 0) {}",
+            "",
+            "    // a[u] = val",
+            "    void assign(int u, ll val) {",
+            "        assert(0 <= u && u < _n);",
+            "        elements[u] = val;",
+            "    }",
+            "",
+            "    // calculates prefix sum array",
+            "    void calculate() {",
+            "        if (_n == 0) return;",
+            "        prefix_sums[0] = elements[0];",
+            "        FOR(i,1,_n-1) prefix_sums[i] = prefix_sums[i-1] + elements[i];",
+            "    }",
+            "",
+            "    // gets sum a[i] with i is in [l, r)",
+            "    ll getSum(int l, int r) {",
+            "        assert(0 <= l && l < _n);",
+            "        assert(0 < r && r <= _n);",
+            "        assert(l < r);",
+            "        if (l == 0) return prefix_sums[r-1];",
+            "        return prefix_sums[r-1] - prefix_sums[l-1];",
+            "    }",
+            "",
+            "  private:",
+            "    int _n;",
+            "    vector<ll> elements, prefix_sums;",
+            "};"
+        ],
+        "description": "Static Range Sum"
     }
 }

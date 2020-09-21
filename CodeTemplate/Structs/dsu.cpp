@@ -1,7 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Status:
-    Idea:
+    Statement: https://judge.yosupo.jp/problem/unionfind
 */
 
 #include <bits/stdc++.h>
