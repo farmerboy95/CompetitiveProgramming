@@ -1,6 +1,6 @@
 /*
     Author: Nguyen Tan Bao
-    Statement: https://judge.yosupo.jp/problem/static_range_sum
+    Statement: https://judge.yosupo.jp/problem/point_add_range_sum
 */
 
 #include <bits/stdc++.h>
@@ -31,35 +31,40 @@ const int MAXM = 1000;
 const int MAXK = 16;
 const int MAXQ = 200010;
 
-struct StaticRangeSum {
+template <class T>
+struct FenwickTree {
   public:
-    // inits an original array and prefix sum array with size n
-    StaticRangeSum() : _n(0) {}
-    StaticRangeSum(int n) : _n(n), elements(n, 0), prefix_sums(n, 0) {}
+    FenwickTree() : _n(0) {}
+    FenwickTree(int n) : _n(n), data(n, 0) {}
 
-    // a[u] = val
-    void assign(int u, ll val) {
-        assert(0 <= u && u < _n);
-        elements[u] = val;
+    void add(int p, T x) {
+        assert(0 <= p && p < _n);
+        // use 1-based indexing when iterating, but storing in 0-based indexing array
+        p++;
+        while (p <= _n) {
+            data[p - 1] += x;
+            p += p & -p;
+        }
     }
 
-    // calculates prefix sum array
-    void calculate() {
-        if (_n == 0) return;
-        prefix_sums[0] = elements[0];
-        FOR(i,1,_n-1) prefix_sums[i] = prefix_sums[i-1] + elements[i];
-    }
-
-    // gets sum a[i] with i is in [l, r)
-    ll getSum(int l, int r) {
-        assert(0 <= l && l < r && r <= _n);
-        if (l == 0) return prefix_sums[r-1];
-        return prefix_sums[r-1] - prefix_sums[l-1];
+    T sum(int l, int r) {
+        assert(0 <= l && l <= r && r <= _n);
+        return sum(r) - sum(l);
     }
 
   private:
     int _n;
-    vector<ll> elements, prefix_sums;
+    vector<T> data;
+
+    // sum from 0 -> r-1
+    T sum(int r) {
+        T s = 0;
+        while (r > 0) {
+            s += data[r - 1];
+            r -= r & -r;
+        }
+        return s;
+    }
 };
 
 int main() {
@@ -67,17 +72,20 @@ int main() {
     cin.tie(nullptr);
     int n, q;
     cin >> n >> q;
-    StaticRangeSum srs(n);
+    FenwickTree<ll> ft(n);
     FOR(i,0,n-1) {
         int x;
         cin >> x;
-        srs.assign(i, x);
+        ft.add(i, x);
     }
-    srs.calculate();
     while (q--) {
-        int l, r;
-        cin >> l >> r;
-        cout << srs.getSum(l, r) << "\n";
+        int ch, u, v;
+        cin >> ch >> u >> v;
+        if (ch == 0) {
+            ft.add(u, v);
+        } else {
+            cout << ft.sum(u, v) << "\n";
+        }
     }
     return 0;
 }

@@ -273,5 +273,46 @@
             "int f(const int a, const int b) { return min(a, b); }"
         ],
         "description": "Static RMQ"
+    },
+    "Fenwick Tree": {
+        "prefix": "zzFenwickTree",
+        "body": [
+            "template <class T>",
+            "struct FenwickTree {",
+            "  public:",
+            "    FenwickTree() : _n(0) {}",
+            "    FenwickTree(int n) : _n(n), data(n, 0) {}",
+            "",
+            "    void add(int p, T x) {",
+            "        assert(0 <= p && p < _n);",
+            "        // use 1-based indexing when iterating, but storing in 0-based indexing array",
+            "        p++;",
+            "        while (p <= _n) {",
+            "            data[p - 1] += x;",
+            "            p += p & -p;",
+            "        }",
+            "    }",
+            "",
+            "    T sum(int l, int r) {",
+            "        assert(0 <= l && l <= r && r <= _n);",
+            "        return sum(r) - sum(l);",
+            "    }",
+            "",
+            "  private:",
+            "    int _n;",
+            "    vector<T> data;",
+            "",
+            "    // sum from 0 -> r-1",
+            "    T sum(int r) {",
+            "        T s = 0;",
+            "        while (r > 0) {",
+            "            s += data[r - 1];",
+            "            r -= r & -r;",
+            "        }",
+            "        return s;",
+            "    }",
+            "};"
+        ],
+        "description": "Fenwick Tree"
     }
 }

@@ -61,9 +61,7 @@ struct SparseTable {
 
     // get op(a[i]) with i is in [l, r)
     T query(int l, int r) {
-        assert(0 <= l && l < _n);
-        assert(0 < r && r <= _n);
-        assert(l < r);
+        assert(0 <= l && l < r && r <= _n);
         int k = log2(r-l);
         return op(sparse_table[l][k], sparse_table[r - (1 << k)][k]);
     }
