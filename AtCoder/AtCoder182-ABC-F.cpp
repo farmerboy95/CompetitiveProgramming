@@ -2,7 +2,7 @@
     Author: Nguyen Tan Bao
     Status: AC
     Idea:
-        - First of all notice that any number 𝑋 has unique minimal representation. 
+        - First of all notice that any number X has unique minimal representation. 
         This can be proved by greedy exchange (using the fact that each successive number 
         is a multiple of the previous number).
         - Now, notice the isomorphism (structure equivalence) between the number bases and 
