@@ -31,40 +31,34 @@ const int MAXM = 1000;
 const int MAXK = 16;
 const int MAXQ = 200010;
 
-template <class T>
-struct FenwickTree {
-  public:
-    FenwickTree() : _n(0) {}
-    FenwickTree(int n) : _n(n), data(n, 0) {}
+struct BinaryIndexedTree {
+    public:
+    // 1-indexed
+    BinaryIndexedTree(int n) {
+        N = n;
+        t.resize(N+1);
+        FOR(i,0,N) t[i] = 0;
+    }
 
-    void add(int p, T x) {
-        assert(0 <= p && p < _n);
-        // use 1-based indexing when iterating, but storing in 0-based indexing array
-        p++;
-        while (p <= _n) {
-            data[p - 1] += x;
-            p += p & -p;
+    void update(int u, int val) {
+        while (u <= N) {
+            t[u] += val;
+            u = u + (u & (-u));
         }
     }
-
-    T sum(int l, int r) {
-        assert(0 <= l && l <= r && r <= _n);
-        return sum(r) - sum(l);
-    }
-
-  private:
-    int _n;
-    vector<T> data;
-
-    // sum from 0 -> r-1
-    T sum(int r) {
-        T s = 0;
-        while (r > 0) {
-            s += data[r - 1];
-            r -= r & -r;
+ 
+    ll get(int u) {
+        ll res = 0;
+        while (u) {
+            res += t[u];
+            u = u - (u & (-u));
         }
-        return s;
+        return res;
     }
+
+    private:
+    vector<ll> t;
+    int N;
 };
 
 int main() {
@@ -72,19 +66,21 @@ int main() {
     cin.tie(nullptr);
     int n, q;
     cin >> n >> q;
-    FenwickTree<ll> ft(n);
+    BinaryIndexedTree bit(n);
     FOR(i,0,n-1) {
         int x;
         cin >> x;
-        ft.add(i, x);
+        bit.update(i+1, x);
     }
     while (q--) {
         int ch, u, v;
         cin >> ch >> u >> v;
         if (ch == 0) {
-            ft.add(u, v);
+            bit.update(u+1, v);
         } else {
-            cout << ft.sum(u, v) << "\n";
+            ll r = bit.get(v);
+            ll l = bit.get(u);
+            cout << r-l << "\n";
         }
     }
     return 0;
