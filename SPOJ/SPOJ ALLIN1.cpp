@@ -2,7 +2,7 @@
     Author: Nguyen Tan Bao
     Status: AC
     Idea:
-        - Use treap with key as the input values, we can easily do the queries
+        - Use treap with keys as the input values.
 */
 
 #include <bits/stdc++.h>
@@ -36,12 +36,11 @@ const int MAXQ = 200010;
 mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 struct OrdinaryTreap {
     struct node {
-        int key, prior, sz, val, sum;
+        int key, prior, sz;
         node *l, *r;
 
-        node(int _key = 0, int _val = 0) {
+        node(int _key = 0) {
             key = _key;
-            val = sum = _val;
             prior = rnd();
             sz = 1;
             l = r = NULL;
@@ -62,14 +61,9 @@ struct OrdinaryTreap {
         return it ? it->sz : 0;
     }
 
-    int getSum(pnode it) {
-        return it ? it->sum : 0;
-    }
-
     void recalc(pnode it) {
         if (it) {
             it->sz = size(it->l) + size(it->r) + 1;
-            it->sum = it->val + getSum(it->l) + getSum(it->r);
         }
     }
 
@@ -101,17 +95,15 @@ struct OrdinaryTreap {
     }
 
     void insert(int u) {
-        pnode w = new node(u, 1);
+        pnode w = new node(u);
         insert(root, w);
     }
 
     bool search(pnode &t, int key) {
         if (!t) return false;
         bool co = false;
-        if (key == t->key) {
-            t->val += 1;
-            co = true;
-        } else if (key < t->key) co |= search(t->l, key);
+        if (key == t->key) co = true;
+        else if (key < t->key) co |= search(t->l, key);
         else co |= search(t->r, key);
         recalc(t);
         return co;
@@ -132,56 +124,55 @@ struct OrdinaryTreap {
         return remove(root, pos);
     }
 
-    int count(pnode &t, int key) {
-        if (!t) return 0;
-        if (key >= t->key) return t->val + getSum(t->l) + count(t->r, key);
-        return count(t->l, key);
+    int findPos(pnode &t, int key) {
+        if (!t) return -1;
+        if (key == t->key) return 1 + size(t->l);
+        else if (key > t->key) {
+            int e = findPos(t->r, key);
+            if (e != -1) return 1 + size(t->l) + e;
+            return -1;
+        }
+        return findPos(t->l, key);
     }
 
-    int count(int pos) {
-        return count(root, pos);
+    int findPos(int val) {
+        return findPos(root, val);
     }
 
-    int smallest(pnode &t, int k) {
-        if (!t) return 0;
+    int getVal(pnode &t, int pos) {
+        if (!t) return -1;
 
-        int e = getSum(t->l);
-        if (e >= k) return smallest(t->l, k);
+        int e = size(t->l);
+        if (e >= pos) return getVal(t->l, pos);
 
-        k -= e;
-        if (k <= t->val) return t->key;
+        pos -= e;
+        if (pos == 1) return t->key;
 
-        k -= t->val;
-        return smallest(t->r, k);
+        pos--;
+        return getVal(t->r, pos);
     }
 
-    int smallest(int k) {
-        return smallest(root, k);
+    int getVal(int pos) {
+        if (size(root) < pos) return -1;
+        return getVal(root, pos);
     }
 };
 
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(nullptr);
-    int n, m;
-    cin >> n >> m;
+    int u, v;
     OrdinaryTreap tr;
-    FOR(i,1,n) {
-        int x;
-        cin >> x;
-        if (!tr.search(x)) tr.insert(x);
-    }
-    while (m--) {
-        int ch, u;
-        cin >> ch >> u;
-        if (ch == 1) {
-            int a = tr.count(u);
-            if (!tr.search(u+a)) tr.insert(u+a);
-        } else if (ch == 2) {
-            cout << tr.count(u) << "\n";
+    while (cin >> u && u != -1) {
+        cin >> v;
+        if (u == 1) {
+            if (!tr.search(v)) tr.insert(v);
+        } else if (u == 2) {
+            tr.remove(v);
+        } else if (u == 3) {
+            cout << tr.findPos(v) << "\n";
         } else {
-            if (tr.getSum(tr.root) < u) cout << "invalid\n";
-            else cout << tr.smallest(u) << "\n";
+            cout << tr.getVal(v) << "\n";
         }
     }
     return 0;
