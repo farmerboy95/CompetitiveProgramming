@@ -58,7 +58,7 @@
             "    for (const auto& x: v) { if (!fst) res += \" \"; fst = 0; res += ts(x); }",
             "    return res;",
             "}",
-            "template<class T, class U> string ts(pair<T,U> p) { return \"(\"+ts(p.f)+\", \"+ts(p.s)+\")\"; }",
+            "template<class T, class U> string ts(pair<T,U> p) { return \"(\"+ts(p.FI)+\", \"+ts(p.SE)+\")\"; }",
             "",
             "// OUTPUT",
             "template<class T> void pr(T x) { cout << ts(x); }",
