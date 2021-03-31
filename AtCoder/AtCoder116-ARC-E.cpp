@@ -98,7 +98,7 @@ const int MAXQ = 200010;
 int n, k, closest[MAXN], furthest[MAXN], num;
 vi a[MAXN];
 
-void setSpecial(int u) {
+inline void setSpecial(int u) {
     num++;
     closest[u] = 0;
     furthest[u] = -1;
@@ -128,26 +128,15 @@ void dfs(int u, int p, int x) {
         }
     }
 
-    if (closest[u] == -1 && furthest[u] == -1) {
-        // must be a leaf
+    // no furthest? so it should be the current node u as we don't know if it's covered yet
+    if (furthest[u] == -1) {
         furthest[u] = 0;
-        // for x = 0 case
-        if (furthest[u] == x) {
-            setSpecial(u);
-        }
-    } else if (closest[u] == -1 && furthest[u] != -1) {
+    }
+
+    if (closest[u] == -1) {
         // no special vertex in the subtree of u so far
         if (furthest[u] == x) {
             setSpecial(u);
-        }
-    } else if (closest[u] != -1 && furthest[u] == -1) {
-        // no furthest found so far, u may be a furthest node
-        if (closest[u] > x) {
-            furthest[u] = closest[u] - x - 1;
-            // for x = 0 case
-            if (furthest[u] == x) {
-                setSpecial(u);
-            }
         }
     } else {
         if (furthest[u] == x || closest[u] == 2 * x + 1) {
