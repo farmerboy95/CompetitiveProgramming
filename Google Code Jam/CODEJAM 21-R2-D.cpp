@@ -2,8 +2,14 @@
     Author: Nguyen Tan Bao
     Status: AC
     Idea:
-        - Min Cost Matching using Hungarian Algorithm
-        - n bottles on the left group and m couriers + (n-1) clone restaurant on the right.
+        - Create a bipartite graph with one side containing nodes (G - M) (G in initial table and M
+        in the result table) and the other side containing nodes (M - G)
+        - Each pair of nodes having cost as either the minimum orthogonal distance between the 
+        two positions multiplied by S or 2F, since we can also do two flips.
+        - The total cost is the cost of the maximum matching of minimum weight plus F times the 
+        number of unmatched cells.
+        - We can use Hungarian Algorithm to solve.
+        - Proof: https://codingcompetitions.withgoogle.com/codejam/round/0000000000435915/00000000007dc20c#analysis
 */
 
 #include <bits/stdc++.h>
@@ -77,7 +83,7 @@ const ld EPS = 1e-9;
 const ll MODBASE = 1000000007LL;
 const int INF = 0x3f3f3f3f;
 
-const int MAXN = 1010;
+const int MAXN = 110;
 const int MAXM = 1000;
 const int MAXK = 16;
 const int MAXQ = 200010;
@@ -85,19 +91,19 @@ const int MAXQ = 200010;
 struct HungarianAlgo {
     vi Lmate, Rmate;
     int n, m;
-    vector<vi> cost;
+    vector<vl> cost;
 
     HungarianAlgo(int _N, int _M) {
         Lmate.resize(_N);
         Rmate.resize(_M);
         n = _N;
         m = _M;
-        vi tmp(m);
+        vl tmp(m);
         cost.clear();
         FOR(i,0,n-1) cost.push_back(tmp);
     }
 
-    void setCost(int i, int j, int x) {
+    void setCost(int i, int j, ll x) {
         // dbg(i, j, x);
         cost[i][j] = x;
     }
@@ -107,7 +113,7 @@ struct HungarianAlgo {
         // Labelling: u[i] + v[j] <= A[i][j]
 
         // construct dual feasible solution
-        vi u(n), v(m);
+        vl u(n), v(m);
         FOR(i,0,n-1) {
             u[i] = cost[i][0];
             FOR(j,1,m-1) ckmin(u[i], cost[i][j]);
@@ -134,9 +140,9 @@ struct HungarianAlgo {
             }
         
         // repeat until primal solution is feasible
-        vi dist(m);
+        vl dist(m);
         vi seen(m), dad(m);
-        while (mated < n) {
+        while (mated < min(n, m)) {
             // find an unmatched left node
             int s = 0;
             while (Lmate[s] != -1) s++;
@@ -192,38 +198,64 @@ struct HungarianAlgo {
         }
     }
 
-    ll getMatchingValue() {
-        ll value = 0;
-        FOR(i,0,n-1) value += cost[i][Lmate[i]];
+    ll getMatchingValue(int f, int s, int dem) {
+        ll value = 0, cnt = 0;
+        FOR(i,0,n-1) {
+            if (Lmate[i] == -1) continue;
+            cnt++;
+            // dbg(Lmate[i]);
+            value += cost[i][Lmate[i]];
+        }
+        // dbg(value, cnt);
+        value += (ll) (m - cnt) * f;
         return value;
     }
 };
 
-int n, m, x[MAXN], y[MAXN], u[MAXN], v[MAXN], p, q;
-
-int dist(int xx, int yy, int uu, int vv) {
-    return abs(xx-uu) + abs(yy-vv);
-}
+int n, m, f, s;
+char ch[MAXN][MAXN], ch2[MAXN][MAXN];
 
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(nullptr);
-    cin >> n >> m;
-    FOR(i,0,n-1) cin >> x[i] >> y[i];
-    FOR(i,0,m-1) cin >> u[i] >> v[i];
-    cin >> p >> q;
+    int te;
+    cin >> te;
+    FOR(o,1,te) {
+        cout << "Case #" << o << ": ";
+        cin >> n >> m >> f >> s;
+        FOR(i,0,n-1) FOR(j,0,m-1) cin >> ch[i][j];
+        FOR(i,0,n-1) FOR(j,0,m-1) cin >> ch2[i][j];
 
-    // n bottles - m courier + (n-1) clone restaurant
-    HungarianAlgo hungarian(n, n-1 + m);
-    FOR(i,0,n-1) {
-        FOR(j,0,m-1) {
-            hungarian.setCost(i, j, dist(u[j], v[j], x[i], y[i]) + dist(x[i], y[i], p, q));
-        }
-        FOR(j,m,m+n-2) {
-            hungarian.setCost(i, j, dist(x[i], y[i], p, q) * 2);
+        int cnt = 0;
+        FOR(i,0,n-1) FOR(j,0,m-1)
+            if (ch[i][j] != ch2[i][j]) cnt++;
+
+        vpi a, b;
+
+        FOR(i,0,n-1)
+            FOR(j,0,m-1) {
+                if (ch[i][j] == 'G' && ch2[i][j] == 'M') {
+                    a.push_back({i, j});
+                } else if (ch[i][j] == 'M' && ch2[i][j] == 'G') {
+                    b.push_back({i, j});
+                }
+            }
+        if (SZ(a) && SZ(b)) {
+            if (SZ(a) > SZ(b)) swap(a, b);
+            HungarianAlgo h(SZ(a), SZ(b));
+            FOR(i,0,SZ(a)-1)
+                FOR(j,0,SZ(b)-1) {
+                    int val = (abs(a[i].FI - b[j].FI) + abs(a[i].SE - b[j].SE)) * s;
+                    val = min(val, 2 * f);
+                    // dbg(i, j, val);
+                    h.setCost(i, j, val);
+                    
+                }
+            h.getMatching();
+            cout << h.getMatchingValue(f, s, cnt) << "\n";
+        } else {
+            cout << cnt * f << "\n";
         }
     }
-    hungarian.getMatching();
-    cout << hungarian.getMatchingValue();
     return 0;
 }
