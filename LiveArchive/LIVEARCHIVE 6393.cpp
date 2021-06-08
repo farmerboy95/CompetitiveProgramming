@@ -5,6 +5,18 @@
         - Submitted at: https://www.e-olymp.com/en/problems/5650
         - https://blog.csdn.net/weixin_30767921/article/details/99328332
         - https://www.csc.kth.se/~austrin/icpc/finals2013solutions.pdf
+        - The main idea is to realize that because both rotations and reflections of 
+        pieces are allowed, the geometry of the problem is completely irrelevant. 
+        That is, it suffices to check if there is an infinite chain of pieces P1, 
+        P2, . . . such that Pi can be connected to Pi+1. If such a chain exists then
+        using rotations and reflections it can always be laid out in such a way that 
+        only the adjacent pieces touch each other (e.g. you can make it so that you 
+        always go upwards or to the right). If such a chain doesn’t exist then clearly 
+        the answer is “bounded”.
+        - This reduces the problem to checking for cycles in a graph that consists 
+        of the n <= 40 000 pieces. This is however still too much, but there is one 
+        small additional trick: only the connections matter, so you can consider the 
+        graph consisting only of 2 x 26 nodes A+, A−, ..., Z+, Z−.
 */
 
 #include <bits/stdc++.h>
