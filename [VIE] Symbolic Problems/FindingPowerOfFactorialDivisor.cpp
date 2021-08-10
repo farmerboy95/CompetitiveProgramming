@@ -1,11 +1,11 @@
 /*
     Đề bài:
-        - Cho 2 số n và k. Tìm số mũ lớn nhất x của k sao cho n! chia hết chia k^x
+        - Cho 2 số n và k. Tìm số mũ lớn nhất x của k sao cho n! chia hết cho k^x
     Lời giải:
         - n! = 1 * 2 * 3 * 4 * ... * n
         - Khi k là số nguyên tố, res = n / k + n / k^2 + n / k^3 + ...
-        - Khi k là hợp số, phân tích k ra thành các thừa số nguyên tố, với mỗi thừa số nguyên tố  p (với 
-        số mũ là t) thì tìm số mũ lớn nhất x của p trong n! như khi tính với số nguyên tố. Kết quả  là
+        - Khi k là hợp số, phân tích k ra thành các thừa số nguyên tố, với mỗi thừa số nguyên tố p (với 
+        số mũ là t) thì tìm số mũ lớn nhất x của p trong n! như khi tính với số nguyên tố. Kết quả là
         min(x[i] / t[i])
     Nguồn: 
         - https://cp-algorithms.com/algebra/factorial-divisors.html

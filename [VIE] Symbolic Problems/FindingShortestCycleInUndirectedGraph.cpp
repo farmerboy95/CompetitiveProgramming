@@ -102,8 +102,7 @@ int main() {
                     if (dist[newNode] == 0 && newNode != i) {
                         q.push(np);
                         dist[newNode] = dist[node] + 1;
-                    }
-                    else {
+                    } else {
                         res = min(res, dist[node] + dist[newNode] + 1);
                     }
                 }
