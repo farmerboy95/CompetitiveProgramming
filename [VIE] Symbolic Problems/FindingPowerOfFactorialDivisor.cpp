@@ -1,4 +1,5 @@
 /*
+    Keywords: factorial, divisor, integer factorization
     Đề bài:
         - Cho 2 số n và k. Tìm số mũ lớn nhất x của k sao cho n! chia hết cho k^x
     Lời giải:
