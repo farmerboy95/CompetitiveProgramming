@@ -17,6 +17,7 @@
         (i inside the segment). We get through the input twice, the first time is for preparing the
         segment tree as well as the fenwick tree in each node of the segment tree. The second time
         we can solve the problem.
+        - https://codeforces.com/blog/entry/54233
 */
 
 #include <bits/stdc++.h>
