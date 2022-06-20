@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# source: https://codeforces.com/blog/entry/99821
 # compile main file and interactor file
 # python3 golovanov_interact.py ./main ./interactor
 
