@@ -16,6 +16,8 @@
         tree. So when we consider one edge (u, v), we get sum of the cnt of the subtree of u
         and the rest of the tree. If the sum = 0, means the direction of the edge can be B,
         otherwise, we direct the edge to the component with negative sum.
+        - If you are not familiar with the dp in the code, please refer to this article:
+        https://codeforces.com/blog/entry/68138 (Observation 3)
 */
 
 #include <bits/stdc++.h>

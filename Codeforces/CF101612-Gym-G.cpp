@@ -13,6 +13,8 @@
         - What about the ending node? We find the above back edges, take 2. So the LCA of
         those 2 is the ending node.
         - Finally we build the path of the 3 solutions.
+        - If you are not familiar with the dp in the code, please refer to this article:
+        https://codeforces.com/blog/entry/68138 (Observation 3)
 */
 
 #include <bits/stdc++.h>

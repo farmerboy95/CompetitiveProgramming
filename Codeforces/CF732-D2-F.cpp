@@ -12,6 +12,8 @@
         - We now have a tree, each node is a SCC in the real graph. How to know the answer?
         The answer is the largest SCC. We can build an answer that we direct all other nodes
         to that SCC.
+        - If you are not familiar with the dp in the code, please refer to this article:
+        https://codeforces.com/blog/entry/68138 (Observation 3)
 */
 
 #include <bits/stdc++.h>

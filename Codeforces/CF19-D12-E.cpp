@@ -11,6 +11,8 @@
         contradictory and how many non-contradictory back-edges pass over it;
         - if a span-edge has all contradictory and no non-contradictory edges 
         passing over it, add it to the answer.
+        - If you are not familiar with the dp in the code, please refer to this article:
+        https://codeforces.com/blog/entry/68138 (Observation 3)
 */
 
 #include <bits/stdc++.h>
