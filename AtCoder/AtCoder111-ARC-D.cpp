@@ -1,9 +1,21 @@
 /*
+    Template Version: 1.0.0 - 20220620
     Author: Nguyen Tan Bao
     Status: AC
     Idea:
-        - https://atcoder.jp/contests/arc111/editorial/545
-        - Make DFS tree inside the component with the same c only, if not, it would be WA.
+        - Consider an edge (u, v):
+            + If c[u] != c[v], we can easily choose the direction
+            + Otherwise, there are equal numbers of vertices reachable from u and v, and
+            it must be reachable from u to v and vice versa, that is, they must be strongly
+            connected
+        - Thus, the problem can be rephrased as one where we are given a connected undirected 
+        graph and asked to direct the edges so that the graph becomes strongly connected.
+        - As there is always a solution, the rest of the graph after removing edges of the first
+        case must be strongly connected. We can create a DFS tree and choose edge direction like
+        this:
+            + If the edge is a span edge, we direct it to go down
+            + Otherwise, it's a back edge, we direct it to go up (if depth of the destination
+            is smaller than the source)
 */
 
 #include <bits/stdc++.h>
@@ -45,18 +57,27 @@ void setPrec(int x) { cout << fixed << setprecision(x); }
 string ts(char c) { return string(1, c); }
 string ts(const char* s) { return (string) s; }
 string ts(string s) { return s; }
-string ts(bool b) { return ts((int)b); }
-template<class T> string ts(complex<T> c) { stringstream ss; ss << c; return ss.str(); }
+string ts(bool b) { return (b ? "true" : "false"); }
+
 template<class T> using V = vector<T>;
+template<class T> string ts(complex<T> c);
+string ts(V<bool> v);
+template<size_t sz> string ts(bitset<sz> b);
+template<class T> string ts(T v);
+template<class T, class U> string ts(pair<T,U> p);
+template<class ...U> string ts(tuple<U...> u);
+
+template<class T> string ts(complex<T> c) { stringstream ss; ss << c; return ss.str(); }
 string ts(V<bool> v) {string res = "{"; FOR(i,0,SZ(v)-1) res += char('0'+v[i]); res += "}"; return res; }
 template<size_t sz> string ts(bitset<sz> b) { string res = ""; FOR(i,0,SZ(b)-1) res += char('0'+b[i]); return res; }
-template<class T, class U> string ts(pair<T,U> p);
 template<class T> string ts(T v) { // containers with begin(), end()
     bool fst = 1; string res = "";
     for (const auto& x: v) { if (!fst) res += " "; fst = 0; res += ts(x); }
     return res;
 }
-template<class T, class U> string ts(pair<T,U> p) { return "("+ts(p.f)+", "+ts(p.s)+")"; }
+template<class T, class U> string ts(pair<T,U> p) { return "(" + ts(p.FI) + ", " + ts(p.SE) + ")"; }
+template<size_t i, class T> string print_tuple_utils(const T& tup) { if constexpr(i == tuple_size<T>::value) return ")"; else return (i ? ", " : "(") + ts(get<i>(tup)) + print_tuple_utils<i + 1, T>(tup); }
+template<class ...U> string ts(tuple<U...> u) { return print_tuple_utils<0, tuple<U...>>(u); }
 
 // OUTPUT
 template<class T> void pr(T x) { cout << ts(x); }
@@ -67,9 +88,23 @@ template<class T, class ...U> void ps(const T& t, const U&... u) { pr(t); if (si
 // DEBUG
 void DBG() { cerr << "]" << endl; }
 template<class T, class ...U> void DBG(const T& t, const U&... u) { cerr << ts(t); if (sizeof...(u)) cerr << ", "; DBG(u...); }
-#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
-#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
-        << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+
+#ifdef LOCAL_DEBUG
+#define CONCAT(x, y) x##y
+#define with_level setw(__db_level * 2) << setfill(' ') << "" << setw(0)
+#define dbg(...) cerr << with_level << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...) if (!(__VA_ARGS__)) cerr << setw(__db_level * 2) << setfill(' ') << "" << setw(0) << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+#define db_block() debug_block CONCAT(dbbl, __LINE__)
+int __db_level = 0;
+struct debug_block {
+    debug_block() { cerr << with_level << "{" << endl; ++__db_level; }
+    ~debug_block() { --__db_level; cerr << with_level << "}" << endl; }
+};
+#else
+#define dbg(...) 0
+#define chk(...) 0
+#define db_block() 0
+#endif
 
 const ld PI = acos(-1.0);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1};
@@ -78,21 +113,25 @@ const ll MODBASE = 1000000007LL;
 const int INF = 0x3f3f3f3f;
 
 const int MAXN = 110;
-const int MAXM = 10010;
+const int MAXM = 1000;
 const int MAXK = 16;
 const int MAXQ = 200010;
 
-int n, m, c[MAXN], visited[MAXN], res[MAXM];
-vpi a[MAXN], edges;
+int n, m, c[MAXN], num[MAXN], dfsNum, dir[MAXN * MAXN];
+vector<vi> a[MAXN];
+vpi edges;
 
-void dfs(int u) {
-    visited[u] = 1;
-    TRAV(r, a[u]) {
-        int v = r.FI, idx = r.SE;
-        if (res[abs(idx)] == 0) {
-            if (c[v] == c[u]) {
-                res[abs(idx)] = (idx > 0) ? 1 : -1;
-                if (!visited[v]) dfs(v);
+void dfs(int u, int p) {
+    num[u] = ++dfsNum;
+    TRAV(pa, a[u]) {
+        int v = pa[0], idx = pa[1], d = pa[2];
+        if (v == p) continue;
+        if (!num[v]) {
+            dir[idx] = d;
+            dfs(v, u);
+        } else {
+            if (num[v] < num[u]) {
+                dir[idx] = d;
             }
         }
     }
@@ -105,26 +144,34 @@ int main() {
     FOR(i,1,m) {
         int u, v;
         cin >> u >> v;
-        edges.push_back(pi(u, v));
-        a[u].push_back(pi(v, i));
-        a[v].push_back(pi(u, -i));
+        edges.push_back({u, v});
     }
+
     FOR(i,1,n) cin >> c[i];
-    FOR(i,1,n)
-        if (!visited[i]) dfs(i);
-    FOR(i,1,m)
-        if (res[i] == 0) {
-            int u = edges[i-1].FI, v = edges[i-1].SE;
-            if (c[u] > c[v]) {
-                res[i] = 1;
-            } else {
-                res[i] = -1;
-            }
+
+    FOR(i,0,m-1) {
+        int u = edges[i].FI, v = edges[i].SE;
+        if (c[u] > c[v]) {
+            dir[i] = 1;
+        } else if (c[u] < c[v]) {
+            dir[i] = -1;
+        } else {
+            a[u].push_back({v, i, 1});
+            a[v].push_back({u, i, -1});
         }
-    FOR(i,1,m) {
-        if (res[i] == 1) cout << "->";
-        else cout << "<-";
-        cout << "\n";
     }
+
+    FOR(i,1,n) {
+        if (!num[i]) {
+            dfs(i, 0);
+        }
+    }
+
+    FOR(i,0,m-1)
+        if (dir[i] == 1) {
+            cout << "->\n";
+        } else if (dir[i] == -1) {
+            cout << "<-\n";
+        }
     return 0;
 }
