@@ -298,6 +298,7 @@ struct SplayTree {
     // recursively print subtree with in-order traversal
     void print(Node *cur, string pref) {
         if (cur == NULL) return;
+        cur->pushDown();
         print(cur->children[1], pref + "  ");
         cout << pref << cur->val << "\n";
         print(cur->children[0], pref + "  ");
@@ -324,7 +325,6 @@ int main() {
     }
 
     while (m--) {
-        string s;
         int x, y, k;
         cin >> k;
         if (k == 1) {
