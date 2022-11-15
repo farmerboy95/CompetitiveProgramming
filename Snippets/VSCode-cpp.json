@@ -1106,5 +1106,39 @@
             "};"
         ],
         "description": "Splay Tree"
+    },
+    "RMQ": {
+        "prefix": "zzRMQ",
+        "body": [
+            "struct RMQ {",
+            "    vector<vi> preComp;",
+            "",
+            "    int log2_floor(unsigned long long i) {",
+            "        return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1;",
+            "    }",
+            "",
+            "    RMQ(vi &a) {",
+            "        int n = SZ(a);",
+            "        int k = log2_floor(n);",
+            "        preComp.resize(k+1, vi(n));",
+            "",
+            "        FOR(i,0,n-1) {",
+            "            preComp[0][i] = a[i];",
+            "        }",
+            "",
+            "        FOR(i,1,k) {",
+            "            for (int j = 0; j + (1<<i) - 1 < n; j++) {",
+            "                preComp[i][j] = min(preComp[i-1][j], preComp[i-1][j + (1<<(i-1))]);",
+            "            }",
+            "        }",
+            "    }",
+            "",
+            "    int query(int l, int r) {",
+            "        int lg = log2_floor(r - l + 1);",
+            "        return min(preComp[lg][l], preComp[lg][r - (1<<lg) + 1]);",
+            "    }",
+            "};"
+        ],
+        "description": "RMQ"
     }
 }
