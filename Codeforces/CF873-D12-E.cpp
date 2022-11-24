@@ -21,8 +21,9 @@
             + The number of students with third diploma is a range which is
                 + [max(1, Max / 2 + Max % 2), min(remaining students, 2 * Min)]
             + Ignore when the above range is not an actual range
+            + Get k using sparse table or segment tree, here I used sparse table
             + Then it can be compared to the current result to update result
-        - Complexity O(n log n)
+        - Complexity O(n^2)
 */
 
 #include <bits/stdc++.h>
