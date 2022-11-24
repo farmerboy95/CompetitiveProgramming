@@ -4,6 +4,7 @@
     Status: AC
     Idea:
         - Exactly the same as SPOJ CITY2
+        - We don't really need to care about the width of each building though.
 */
 
 #include <bits/stdc++.h>
