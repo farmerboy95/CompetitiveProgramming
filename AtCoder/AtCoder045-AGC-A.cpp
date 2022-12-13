@@ -3,95 +3,201 @@
     Status: AC
     Idea:
         - Easily see that if the last turn is for 1, player 1 will win no matter what.
-        - Let span(x, y, z ...) is the set containing the xor sums that subsets of x, y, z ...
+        - Let basis(x, y, z ...) is the set containing the xor sums that subsets of x, y, z ...
         can produce.
         - Let's checkout one simple case 111...11000...0000. We can see that if there exists 
-        some x in span(A[1]...A[i]) but not in span(A[i+1]...A[n]) then player 1 wins, otherwise 
+        some x in basis(A[1]...A[i]) but not in basis(A[i+1]...A[n]) then player 1 wins, otherwise 
         player 1 loses. In other words, If there exists some number in A[1]...A[i] not in 
-        span(A[i+1]...A[n]) then player 1 wins, otherwise player 1 loses.
+        basis(A[i+1]...A[n]) then player 1 wins, otherwise player 1 loses.
         - What about a more complicated case, like 11001100? Let's see the value of a 1, at i, if 
-        this value is not in span(A[x], s[x] == 0, x > i), so 1 will always win, clearly. Otherwise,
+        this value is not in basis(A[x], s[x] == 0, x > i), so 1 will always win, clearly. Otherwise,
         there would always be a way for 0 to cover that value, if and only if the next 1s satisfy the
-        condition of being in span of next values of 0 => 0 wins.
+        condition of being in basis of next values of 0 => 0 wins.
 */
 
 #include <bits/stdc++.h>
 #define FI first
 #define SE second
-#define EPS 1e-9
-#define ALL(a) a.begin(),a.end()
+#define ALL(a) a.begin(), a.end()
 #define SZ(a) int((a).size())
 #define MS(s, n) memset(s, n, sizeof(s))
 #define FOR(i,a,b) for (int i = (a); i <= (b); i++)
 #define FORE(i,a,b) for (int i = (a); i >= (b); i--)
 #define FORALL(it, a) for (__typeof((a).begin()) it = (a).begin(); it != (a).end(); it++)
-//__builtin_ffs(x) return 1 + index of least significant 1-bit of x
-//__builtin_clz(x) return number of leading zeros of x
-//__builtin_ctz(x) return number of trailing zeros of x
+#define TRAV(x, a) for (auto &x : a)
 
 using namespace std;
-using ll = long long;
-using ld = double;
-typedef pair<int, int> II;
-typedef pair<II, int> III;
-typedef complex<ld> cd;
-typedef vector<cd> vcd;
+using ll = long long; using ld = double; 
+using pi = pair<int, int>; using pl = pair<ll, ll>; using pd = pair<ld, ld>;
+using cd = complex<ld>; using vcd = vector<cd>;
 
+using vi = vector<int>; using vl = vector<ll>;
+using vd = vector<ld>; using vs = vector<string>;
+using vpi = vector<pi>; using vpl = vector<pl>; using vpd = vector<pd>; // vector<pair>
+
+template<class T> using min_pq = priority_queue<T, vector<T>, greater<T> >;
+template<class T> inline int ckmin(T& a, const T& val) { return val < a ? a = val, 1 : 0; }
+template<class T> inline int ckmax(T& a, const T& val) { return a < val ? a = val, 1 : 0; }
+template<class T> void remDup(vector<T>& v) { sort(ALL(v)); v.erase(unique(ALL(v)), end(v)); }
+
+constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
+constexpr int bits(int x) { return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+constexpr int p2(int x) { return 1<<x; }
+constexpr int msk2(int x) { return p2(x)-1; }
+
+ll ceilDiv(ll a, ll b) { return a / b + ((a ^ b) > 0 && a % b); } // divide a by b rounded up
+ll floorDiv(ll a, ll b) { return a / b - ((a ^ b) < 0 && a % b); } // divide a by b rounded down
+void setPrec(int x) { cout << fixed << setprecision(x); }
+
+// TO_STRING
+#define ts to_string
+string ts(char c) { return string(1, c); }
+string ts(const char* s) { return (string) s; }
+string ts(string s) { return s; }
+string ts(bool b) { return (b ? "true" : "false"); }
+
+template<class T> using V = vector<T>;
+template<class T> string ts(complex<T> c);
+string ts(V<bool> v);
+template<size_t sz> string ts(bitset<sz> b);
+template<class T> string ts(T v);
+template<class T, class U> string ts(pair<T,U> p);
+template<class ...U> string ts(tuple<U...> u);
+
+template<class T> string ts(complex<T> c) { stringstream ss; ss << c; return ss.str(); }
+string ts(V<bool> v) {string res = "{"; FOR(i,0,SZ(v)-1) res += char('0'+v[i]); res += "}"; return res; }
+template<size_t sz> string ts(bitset<sz> b) { string res = ""; FOR(i,0,SZ(b)-1) res += char('0'+b[i]); return res; }
+template<class T> string ts(T v) { // containers with begin(), end()
+    bool fst = 1; string res = "";
+    for (const auto& x: v) { if (!fst) res += " "; fst = 0; res += ts(x); }
+    return res;
+}
+template<class T, class U> string ts(pair<T,U> p) { return "(" + ts(p.FI) + ", " + ts(p.SE) + ")"; }
+template<size_t i, class T> string print_tuple_utils(const T& tup) { if constexpr(i == tuple_size<T>::value) return ")"; else return (i ? ", " : "(") + ts(get<i>(tup)) + print_tuple_utils<i + 1, T>(tup); }
+template<class ...U> string ts(tuple<U...> u) { return print_tuple_utils<0, tuple<U...>>(u); }
+
+// OUTPUT
+template<class T> void pr(T x) { cout << ts(x); }
+template<class T, class ...U> void pr(const T& t, const U&... u) { pr(t); pr(u...); }
+void ps() { pr("\n"); } // print w/ spaces
+template<class T, class ...U> void ps(const T& t, const U&... u) { pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+template<class T, class ...U> void DBG(const T& t, const U&... u) { cerr << ts(t); if (sizeof...(u)) cerr << ", "; DBG(u...); }
+
+#ifdef LOCAL_DEBUG
+#define CONCAT(x, y) x##y
+#define with_level setw(__db_level * 2) << setfill(' ') << "" << setw(0)
+#define dbg(...) cerr << with_level << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...) if (!(__VA_ARGS__)) cerr << setw(__db_level * 2) << setfill(' ') << "" << setw(0) << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+#define db_block() debug_block CONCAT(dbbl, __LINE__)
+int __db_level = 0;
+struct debug_block {
+    debug_block() { cerr << with_level << "{" << endl; ++__db_level; }
+    ~debug_block() { --__db_level; cerr << with_level << "}" << endl; }
+};
+#else
+#define dbg(...) 0
+#define chk(...) 0
+#define db_block() 0
+#endif
+
+const ld PI = acos(-1.0);
+const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1};
+const ld EPS = 1e-9;
 const ll MODBASE = 1000000007LL;
-const int MAXN = 210;
+const int INF = 0x3f3f3f3f;
+
+const int MAXN = 110;
 const int MAXM = 1000;
 const int MAXK = 16;
 const int MAXQ = 200010;
 
-const int D = 60;
-ll basis[D];
-int n;
-ll a[MAXN];
-string s;
+struct VectorBasis {
+    vl basis;
+    int d, sz;
+    int numVectors;
 
-void insertVector(ll mask) {
-    FOR(i,0,D-1) {
-        if (!(mask & (1LL << i))) continue;
-        if (!basis[i]) {
-            basis[i] = mask;
-            return;
+    VectorBasis(int d) {
+        this->d = d;
+        this->sz = 0;
+
+        // numVectors is the number of vectors inserted
+        this->numVectors = 0;
+        basis.resize(d);
+        FOR(i,0,d-1) basis[i] = 0;
+    }
+
+    void insertVector(ll mask, bool incCnt = true) {
+        // insert mask to the basis
+        if (incCnt) numVectors++;
+        FOR(i,0,d-1) {
+            if (!(mask & (1LL << i))) continue;
+
+            if (!basis[i]) {
+                basis[i] = mask;
+                sz++;
+                return;
+            }
+
+            mask ^= basis[i];
         }
-        mask ^= basis[i];
     }
-}
 
-bool inside(ll mask) {
-    FOR(i,0,D-1) {
-        if (!(mask & (1LL << i))) continue;
-        if (!basis[i]) return false;
-        mask ^= basis[i];
+    bool checkXor(ll mask) {
+        // check if mask is representable by the basis
+        FOR(i,0,d-1) {
+            if (!(mask & (1LL<<i))) continue;
+            if (!basis[i]) return false;
+            mask ^= basis[i];
+        }
+        return true;
     }
-    return true;
+
+    void merge(VectorBasis &v) {
+        // merge 2 basis with the same dimention
+        numVectors += v.numVectors;
+        FOR(i,0,d-1) {
+            if (v.basis[i]) {
+                insertVector(v.basis[i], false);
+            }
+        }
+    }
+};
+
+int solve(vl &a, string &s) {
+    int n = SZ(a);
+
+    if (s.back() == '1') return 1;
+    
+    VectorBasis vb(60);
+    FORE(i,n-1,0) {
+        if (s[i] == '1') {
+            if (!vb.checkXor(a[i])) {
+                return 1;
+            }
+        } else {
+            vb.insertVector(a[i]);
+        }
+    }
+    return 0;
 }
 
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(nullptr);
-    int t;
-    cin >> t;
-    while (t--) {
+    int te;
+    cin >> te;
+    while (te--) {
+        int n;
+        string s;
         cin >> n;
-        FOR(i,1,n) cin >> a[i];
+        vl a(n);
+        FOR(i,0,n-1) cin >> a[i];
         cin >> s;
-        s = " " + s;
-        MS(basis, 0);
-        bool co = true;
-        FORE(i,n,1)
-            if (s[i] == '1') {
-                if (!inside(a[i])) {
-                    co = false;
-                    break;
-                }
-            } else {
-                insertVector(a[i]);
-            }
-        if (co) cout << "0\n";
-        else cout << "1\n";
+
+        cout << solve(a, s) << "\n";
     }
     return 0;
 }
