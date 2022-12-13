@@ -1,8 +1,21 @@
 /*
     Template Version: 1.0.0 - 20220620
     Author: Nguyen Tan Bao
-    Status:
+    Status: AC
     Idea:
+        - As long as every vertex has even degree, it's a union of edge-disjoint cycles
+        - Importantly, if we take two (unions of edge-disjoint cycles), then (the set of all 
+        edges that are in exactly one of them) is a union of edge-disjoint cycles.
+        - Cycle basis is a set of simple cycles that forms a basis of the cycle space of the
+        graph. It works exactly like how XOR basis works. Find out more here: 
+        https://en.wikipedia.org/wiki/Cycle_basis
+        - A fundamental cycle basis may be formed from any spanning tree or spanning forest 
+        of the given graph, by selecting the cycles formed by the combination of a path in the 
+        tree and a single edge outside the tree. We can use this to create a cycle basis.
+        - Get the DFS tree of the graph, then for each back edge (from higher level to lower
+        or equal level), we just need to add the xor sum of the cycle to the basis.
+        - Finding the max xor sum is trivial. Refer to https://codeforces.com/blog/entry/68953
+        (Problem 3)
 */
 
 #include <bits/stdc++.h>
