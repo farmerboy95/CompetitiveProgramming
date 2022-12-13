@@ -178,7 +178,6 @@ struct VectorBasis {
 
     ll getMax() {
         ll res = 0;
-        dbg(basis);
         FORE(i,d-1,0) {
             if (!basis[i]) continue;
             if (res & (1LL << i)) continue;
