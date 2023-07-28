@@ -3,12 +3,13 @@
     Status: AC
     Idea:
         - Let E[i] be the expected number of steps from i to n (or passing n)
-        => E[i] = 0 for i >= n
+        => E[i] = 0 if i >= n
            E[i] = E[0] if i is one of numbers in A
-           E[i] = 1 + 1/m * sum(f[j]) (j = i+1 to i+m)
+           E[i] = 1/m * sum(1 + E[j]) (j = i+1 to i+m)
+                = 1 + 1/m * sum(E[j])
         - The answer is E[0]
         - We can see that this transition is cyclic and we have to use another way to solve.
-        - Let E[i] = k[i] * E[0] + b[i]. Solving the equation E[0] = k[0] * f[0] + b[0] leads to
+        - Let E[i] = k[i] * E[0] + b[i]. Solving the equation E[0] = k[0] * E[0] + b[0] leads to
         the answer.
 */
 
@@ -88,22 +89,22 @@ const int MAXM = 1000;
 const int MAXK = 16;
 const int MAXQ = 200010;
 
-struct P{
+struct P {
     ld k, x;
 };
 
-P e[MAXN],sum[MAXN]; //f[i]=k*f[0]+x
+P e[MAXN], sum[MAXN]; // E[i] = k * E[0] + x
 
-P operator +(P i,P j){
-    return {i.k+j.k,i.x+j.x};
+P operator +(P i,P j) {
+    return {i.k + j.k, i.x + j.x};
 } 
 
-P operator -(P i,P j){
-    return {i.k-j.k,i.x-j.x};
+P operator -(P i,P j) {
+    return {i.k - j.k, i.x - j.x};
 }
 
-P operator /(P i,double j){
-    return {i.k/j,i.x/j};
+P operator /(P i, ld j) {
+    return {i.k / j, i.x / j};
 } 
 
 int n, m, k, a[MAXK], ok[MAXN];
@@ -118,12 +119,18 @@ int main() {
         ok[a[i]] = 0;
     }
     FORE(i,n-1,0) {
+        // E[i] = 1/m * sum(1 + E[j]) (j = i+1 to i+m)
+        //      = 1 + 1/m * sum(E[j])
+        // sum[i] here is the suffix sum of E[i..n]
+
         if (ok[i]) e[i] = (sum[i+1] - sum[i+m+1]) / m + (P){0, 1};
         else e[i] = (P) {1, 0};
         sum[i] = sum[i+1] + e[i];
     }
     if (fabs(e[0].k - 1) < EPS) cout << -1;
     else {
+        // E[0] = k * E[0] + x
+        // E[0] = -x / (k - 1)
         ld res = -e[0].x / (e[0].k - 1);
         cout << fixed << setprecision(9) << res;
     }
