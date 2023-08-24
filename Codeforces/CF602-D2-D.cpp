@@ -121,55 +121,55 @@ int n, a[MAXN], d[MAXN], N, q, l[MAXN], r[MAXN];
 stack<pi> s;
 
 int main() {
-	ios::sync_with_stdio(0);
-	cin.tie(nullptr);
-	cin >> n >> q;
-	FOR(i,1,n) cin >> a[i];
-	FOR(i,1,n-1) d[i] = abs(a[i+1] - a[i]);
-	N = n-1;
+    ios::sync_with_stdio(0);
+    cin.tie(nullptr);
+    cin >> n >> q;
+    FOR(i,1,n) cin >> a[i];
+    FOR(i,1,n-1) d[i] = abs(a[i+1] - a[i]);
+    N = n-1;
 
-	FOR(i,1,N) {
-		l[i] = 0;
-		while (SZ(s)) {
-			pi g = s.top();
-			if (g.first < d[i]) s.pop();
-			else {
-				l[i] = g.second;
-				break;
-			}
-		}
-		s.push({d[i], i});
-	}
+    FOR(i,1,N) {
+        l[i] = 0;
+        while (SZ(s)) {
+            pi g = s.top();
+            if (g.first < d[i]) s.pop();
+            else {
+                l[i] = g.second;
+                break;
+            }
+        }
+        s.push({d[i], i});
+    }
 
-	while (SZ(s)) s.pop();
-	FORE(i,N,1) {
-		r[i] = N+1;
-		while (SZ(s)) {
-			pi g = s.top();
-			if (g.first <= d[i]) s.pop();
-			else {
-				r[i] = g.second;
-				break;
-			}
-		}
-		s.push({d[i], i});
-	}
+    while (SZ(s)) s.pop();
+    FORE(i,N,1) {
+        r[i] = N+1;
+        while (SZ(s)) {
+            pi g = s.top();
+            if (g.first <= d[i]) s.pop();
+            else {
+                r[i] = g.second;
+                break;
+            }
+        }
+        s.push({d[i], i});
+    }
 
-	while (q--) {
-		int u, v;
-		cin >> u >> v;
-		v--;
-		ll res = 0;
-		FOR(i,u,v) {
+    while (q--) {
+        int u, v;
+        cin >> u >> v;
+        v--;
+        ll res = 0;
+        FOR(i,u,v) {
             // finding the nearest left element that is larger or equal to the current element
             // it can be out of the range because we won't count it anyways
-			int L = max(l[i], u-1);
+            int L = max(l[i], u-1);
             // finding the nearest right element that is larger than the current element
             // why are these 2 not the same, you can draw a range with a number of same elemnents to see
-			int R = min(r[i], v+1);
-			res += 1LL * d[i] * (i - L) * (R - i);
-		}
-		cout << res << "\n";
-	}
-	return 0;
+            int R = min(r[i], v+1);
+            res += 1LL * d[i] * (i - L) * (R - i);
+        }
+        cout << res << "\n";
+    }
+    return 0;
 }
