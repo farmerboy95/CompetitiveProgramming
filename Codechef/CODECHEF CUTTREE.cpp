@@ -3,26 +3,33 @@
     Author: Nguyen Tan Bao
     Status: AC
     Idea:
-        - We can solve this problem in O(nlog^2n) with the help of centroid decomposition and
-        polynomial multiplication with FFT.
-        - Firstly we build a centroid tree of the given tree. Now the centroid tree has the height
-        of O(logn).
-        - Traverse each node of the centroid tree, when on a particular node, say P:
-            + You need to count the distance between 2 nodes present in different subtrees of P (on
-            the centroid tree).
-                + Build a polynomial for each of the subtree. Polynomial should contain k * x^d, where
-                d is the distance between the node and P, k is the number of nodes that have the distance
-                of d to P. Note that distances here are calculated on the original tree, not the centroid
-                tree.
-                + Add all the polynomials of the subtrees together and square it. This will overcount
-                the distance between 2 nodes present in the same subtree of P, so we need to subtract
-                the square of each subtree's polynomial from the result.
-                + Still we have every pair counted twice, so we need to divide the result by 2.
-                + We now have a polynomial in which coefficient of x^d is the number of paths of length
-                d passing through P and present in different subtrees of P.
-            + You need to count distance between P and all other nodes.
-                + Traverse all the subtree and update the count naively. Since the height of the centroid
-                tree is O(logn), this part takes O(nlogn).
+        - Editorial: https://discuss.codechef.com/t/cuttree-editorial/18164
+        - Let E[x^2, i] be the expected value of the strength of the resulting forest after day i.
+        - After i days, there is a component of size x consisting of vertices u[1], u[2], ..., u[x].
+        We know that, it will contribute x^2 to the answer with some probability.
+        - So for each component, the square of the number of nodes in it will be added to the answer
+        with some probability. Breaking the square, we can see that each of the pairs of nodes in
+        the component will be added to the answer with that probability. So the main problem reduces
+        to finding the expected number of ordered pairs of vertices (u, v) which are connected after
+        i days, indicated by E[u-v, i]. This can be solved by using linearity of expectation. Basically, 
+        we need to find what is the probability that u - v are connected after i days. If we sum this
+        probability for all the ordered pairs, we are done.
+        - For a pair of vertices (u, v), the probability that they are connected after i days is
+        P[u-v, i] = (n-1-i)! / (n-1)! * (n-1-k)! / (n-1-i-k)!, k = distance(u, v) on the initial tree.
+        - Notice that, above expression only depends on the distance between u and v. If we can somehow
+        compute number of ordered pairs of vertices with distance k as D[k] for all k < n, we can write
+        the formula for expectation as
+            E[u-v, i] = (n-1-i)! / (n-1)! * sum(k=0 -> n-1-i)(D[k] * (n-1-k)! / (n-1-i-k)!)
+        - Counting the number of ordered pairs at distance k for all k < n can be done if you solve
+        the problem here: https://judge.yosupo.jp/problem/frequency_table_of_tree_distance. It has
+        the code here: https://github.com/farmerboy95/CompetitiveProgramming/blob/master/YosupoJudge/Tree/YOSUPO%20frequency_table_of_tree_distance.cpp
+        - Ok we got D[i], let H[i] = sum(k=0 -> n-1-i)(D[k] * (n-1-k)! / (n-1-i-k)!)
+        => E[u-v, i] = (n-1-i)! / (n-1)! * H[i]
+        - We also have H[i] = sum(k=0 -> n-1-i)(D[k] * (n-1-k)!) * (1 / (n-1-i-k)!)
+        - H[i] for all 0 <= i < n can now be computed from convolution of 2 polynomials A and B
+            + A[x] = sum(k=0 -> n-1)(D[k] * (n-1-k) * x^k)
+            + B[x] = sum(k=0 -> n-1)(1 / k! * x^k)
+        - Value of H[i] is the coefficient of x^(n-1-i) in A * B mod 1000000007
 */
 
 #include <bits/stdc++.h>
@@ -125,6 +132,7 @@ const int MAXK = 16;
 const int MAXQ = 200010;
 
 int n, parent[MAXN][20], depth[MAXN], maxDepth, sz[MAXN], visited[MAXN], logN;
+ll rev[MAXN], f[MAXN];
 vi a[MAXN];
 vl D;
 
@@ -285,6 +293,54 @@ vi decompose(int u, int p) {
     return curTree;
 }
 
+ll inv(ll u) {
+    ll res = 1;
+    int ex = MODBASE - 2;
+    while (ex) {
+        if (ex & 1) res = res * u % MODBASE;
+        u = u * u % MODBASE;
+        ex >>= 1;
+    }
+    return res;
+}
+
+vector<ll> multiply(vector<ll> &v, vector<ll> &w, ll mod) {
+    int n = 1;
+    while (n < SZ(v) + SZ(w) - 1) n <<= 1;
+    vcd v1(n), v2(n), r1(n), r2(n);
+    FOR(i,0,SZ(v)-1) v1[i] = cd(v[i] >> 15, v[i] & 32767);
+    FOR(i,0,SZ(w)-1) v2[i] = cd(w[i] >> 15, w[i] & 32767);
+    fft(v1, 0);
+    fft(v2, 0);
+
+    FOR(i,0,n-1) {
+        int j = (i ? (n-i) : i);
+        cd ans1 = (v1[i] + conj(v1[j])) * cd(0.5, 0);
+        cd ans2 = (v1[i] - conj(v1[j])) * cd(0, -0.5);
+        cd ans3 = (v2[i] + conj(v2[j])) * cd(0.5, 0);
+        cd ans4 = (v2[i] - conj(v2[j])) * cd(0, -0.5);
+        r1[i] = (ans1 * ans3) + (ans1 * ans4) * cd(0, 1);
+        r2[i] = (ans2 * ans3) + (ans2 * ans4) * cd(0, 1);
+    }
+
+    fft(r1, 1);
+    fft(r2, 1);
+
+    n = SZ(v) + SZ(w) - 1;
+    vector<ll> res(n);
+    FOR(i,0,n-1) {
+        ll av = (ll) round(r1[i].real());
+        ll bv = (ll) round(r1[i].imag()) + (ll) round(r2[i].real());
+        ll cv = (ll) round(r2[i].imag());
+        av %= mod, bv %= mod, cv %= mod;
+        res[i] = (av << 30) + (bv << 15) + cv;
+        res[i] %= mod;
+        res[i] += mod;
+        res[i] %= mod;
+    }
+    return res;
+}
+
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(nullptr);
@@ -294,12 +350,14 @@ int main() {
     FOR(i,1,n-1) {
         int u, v;
         cin >> u >> v;
+        u--;
+        v--;
         a[u].push_back(v);
         a[v].push_back(u);
     }
 
-    // D is a polynomial, D[i] is the number of ordered pairs of vertices with
-    // distance i, so here initially we have D[0] = n means that we have n ordered
+    // D is a polynomial, D[i] is the number of unordered pairs of vertices with
+    // distance i, so here initially we have D[0] = n means that we have n unordered
     // pairs of vertices with distance 0: (0, 0), (1, 1), (2, 2), ..., (n-1, n-1)
     D = {n};
 
@@ -310,11 +368,31 @@ int main() {
     
     // use centroid decomposition
     decompose(0, 0);
+    // resize D because size of D may be smaller than n
+    while (SZ(D) < n) D.push_back(0);
     
-    // The result only requires unordered pairs and no (i, i) pairs, so we take from D[1]
-    // and half of each D[i]
-    FOR(i,1,n-1)
-        if (i < SZ(D)) cout << D[i] / 2 << " ";
-        else cout << 0 << " ";
+    // calculate f[i] = i! and rev[i] = 1 / i!
+    f[0] = 1;
+    FOR(i,1,n) f[i] = f[i-1] * i % MODBASE;
+    rev[n] = inv(f[n]);
+    FORE(i,n-1,0) rev[i] = rev[i+1] * (i+1) % MODBASE;
+
+    // A = sum(D[i] * (n-1-i) * x^i)
+    // B = sum(1 / i! * x^i)
+    vl A, B;
+    FOR(i,0,n-1) {
+        A.push_back(D[i] * f[n-1-i] % MODBASE);
+        B.push_back(rev[i]);
+    }
+
+    vl res = multiply(A, B, MODBASE);
+    FOR(i,0,n-1) {
+        // E[u-v, i] = (n-1-i)! / (n-1)! * H[i]
+        // H[i] = coefficient of x^(n-1-i)
+        ll h = res[n-1-i];
+        h = h * f[n-1-i] % MODBASE;
+        h = h * rev[n-1] % MODBASE;
+        cout << h << ' ';
+    }
     return 0;
 }
