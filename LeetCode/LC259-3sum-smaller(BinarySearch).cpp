@@ -4,9 +4,9 @@
     Status: AC
     Idea:
         - Sort the array
-        - Fix 2 numbers, use binary search to find the third one, in this case, we find the first
-        number larger than target-nums[i]-nums[j], and the last number smaller than or equal to
-        target-nums[i]-nums[j]. Then we update the result based on those 2 numbers.
+        - Fix 2 numbers, use binary search to find the last number that is smaller than 
+        target - nums[i] - nums[j]
+        - Add the number of triplets to the result
 */
 
 #include <bits/stdc++.h>
@@ -110,24 +110,33 @@ const int MAXQ = 200010;
 
 class Solution {
 public:
-    int threeSumClosest(vector<int>& nums, int target) {
+    int threeSumSmaller(vector<int>& nums, int target) {
         int n = nums.size();
+        
+        if (n < 3) {
+            return 0;
+        }
+        
         sort(nums.begin(), nums.end());
-        int res = 1e9;
-        for (int i = 0; i < n-2; i++) {
-            for (int j = i+1; j < n-1; j++) {
+        int res = 0;
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = i+1; j < n; j++) {
                 int comp = target - nums[i] - nums[j];
-                int upperBoundPos = upper_bound(nums.begin() + j + 1, nums.end(), comp) - nums.begin();
-                int lowerBoundPos = upperBoundPos - 1;
-
-                if (upperBoundPos < n && abs(res - target) > abs(comp - nums[upperBoundPos])) {
-                    res = nums[i] + nums[j] + nums[upperBoundPos];
+                
+                int l = j+1, r = n-1;
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (nums[mid] >= comp) r = mid-1;
+                    else l = mid+1;
                 }
-                if (lowerBoundPos > j && abs(res - target) > abs(comp - nums[lowerBoundPos])) {
-                    res = nums[i] + nums[j] + nums[lowerBoundPos];
+
+                if (r > j && r < n) {
+                    res += r - j;
                 }
             }
         }
+        
         return res;
     }
 };

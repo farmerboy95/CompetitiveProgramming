@@ -3,10 +3,11 @@
     Author: Nguyen Tan Bao
     Status: AC
     Idea:
-        - Sort the array
-        - Fix 2 numbers, use binary search to find the third one, in this case, we find the first
-        number larger than target-nums[i]-nums[j], and the last number smaller than or equal to
-        target-nums[i]-nums[j]. Then we update the result based on those 2 numbers.
+        - For each i, use 2-pointer technique to find the satisfied triplets
+        - Put left and right pointer at i+1 and n-1. At each step, if the sum is less than
+        target, we know that we can add r-l triplets to the result, because if we move r to
+        the left, the sum will also be smaller, so we can add r-l triplets to the result. Then
+        we move l to the right. Otherwise, we move r to the left.
 */
 
 #include <bits/stdc++.h>
@@ -110,24 +111,28 @@ const int MAXQ = 200010;
 
 class Solution {
 public:
-    int threeSumClosest(vector<int>& nums, int target) {
+    int threeSumSmaller(vector<int>& nums, int target) {
         int n = nums.size();
+        
+        if (n < 3) {
+            return 0;
+        }
+        
         sort(nums.begin(), nums.end());
-        int res = 1e9;
-        for (int i = 0; i < n-2; i++) {
-            for (int j = i+1; j < n-1; j++) {
-                int comp = target - nums[i] - nums[j];
-                int upperBoundPos = upper_bound(nums.begin() + j + 1, nums.end(), comp) - nums.begin();
-                int lowerBoundPos = upperBoundPos - 1;
-
-                if (upperBoundPos < n && abs(res - target) > abs(comp - nums[upperBoundPos])) {
-                    res = nums[i] + nums[j] + nums[upperBoundPos];
-                }
-                if (lowerBoundPos > j && abs(res - target) > abs(comp - nums[lowerBoundPos])) {
-                    res = nums[i] + nums[j] + nums[lowerBoundPos];
+        int res = 0;
+        
+        for (int i = 0; i < n; i++) {
+            int l = i + 1, r = n - 1;
+            while (l < r) {
+                if (nums[i] + nums[l] + nums[r] < target) {
+                    res += r - l;
+                    l++;
+                } else {
+                    r--;
                 }
             }
         }
+        
         return res;
     }
 };
