@@ -5,31 +5,26 @@
         tối đa W đơn vị khối lượng.
         - Tìm giá trị lớn nhất mà túi có thể chứa sao cho tổng khối lượng của các món đồ
         được chứa không vượt quá W.
+        - Bài này đề giống hệt Knapsack, chỉ là có W rất lớn nhưng v rất bé, tầm 10^3
     Lời giải:
-        - Gọi dp[i][j] = giá trị lớn nhất mà túi có thể chứa khi chỉ xét i món đồ đầu tiên
-        và tổng khối lượng bằng j.
+        - Với W lớn như thế này, ta không thể dùng cách O(n*W) như bài Knapsack được.
+        - Để ý rằng v[i] <= 10^3, nên tổng giá trị lớn nhất mà túi có thể chứa không vượt
+        quá 10^3 * n, ở đây n <= 100, nên tổng V không vượt quá 10^5.
+        - Như vậy ta có thể dp theo giá trị, không cần dp theo khối lượng.
+        - Gọi dp[i][j] = khối lượng nhỏ nhất mà túi có thể chứa khi chỉ xét i món đồ đầu tiên
+        và tổng giá trị bằng j.
         - Ban đầu ta có dp[0][0] = 0, vì chưa có món đồ nào. Còn lại dp[i][j] = -1 vì chưa
         có các trạng thái đó.
         - Với mỗi món đồ i, ta cập nhật dp[i][j] bằng cách thử chọn hoặc không chọn món đồ i.
-        Nếu không chọn món đồ i, dp[i][j] = dp[i-1][j]. Nếu chọn món đồ i, dp[i][j] = dp[i-1][j-w[i]] + v[i].
-        Kết quả là dp[i][j] = max(dp[i-1][j], dp[i-1][j-w[i]] + v[i]). Tất nhiên là ta chỉ
+        Nếu không chọn món đồ i, dp[i][j] = dp[i-1][j]. Nếu chọn món đồ i, dp[i][j] = dp[i-1][j-v[i]] + w[i].
+        Kết quả là dp[i][j] = min(dp[i-1][j], dp[i-1][j-v[i]] + w[i]). Tất nhiên là ta chỉ
         sử dụng dp[i-1][] nếu nó khác -1.
-        - Đáp án là giá trị lớn nhất trong các dp[n][j] với j = 0, 1, ..., W.
-        - Tuy nhiên ta thấy là giá trị dp[i][] chỉ phụ thuộc vào dp[i-1][], nên ta chỉ cần
-        mảng một chiều dp[].
-        - Gọi dp[j] = giá trị lớn nhất mà túi có thể chứa khi tổng khối lượng bằng j.
-        - Ban đầu ta có dp[0] = 0, vì chưa có món đồ nào. Còn lại dp[j] = -1 vì chưa
-        có các trạng thái đó.
-        - Với mỗi món đồ i, nếu không chọn nó thì ta đã có sẵn dp[j], còn nếu chọn nó thì
-        dp[j] = dp[j-w[i]] + v[i]. Kết quả là dp[j] = max(dp[j], dp[j-w[i]] + v[i]). Tuy
-        nhiên ở đây, nếu ta duyệt j từ 0 đến W, ta có thể sẽ sử dụng v[i] nhiều lần, nên
-        ta phải duyệt j từ W về 0 để tránh trường hợp trùng lặp.
-        - Đáp án là giá trị lớn nhất trong các dp[j] với j = 0, 1, ..., W.
-        - Độ phức tạp O(n*W).
+        - Đáp án là j lớn nhất mà dp[n][j] <= W.
+        - Ta cũng có thể bỏ đi một chiều của mảng dp như bài Knapsack và làm tương tự.
+        - Độ phức tạp O(n*sumV).
     Nguồn: 
-        - https://atcoder.jp/contests/dp/tasks/dp_d
+        - https://atcoder.jp/contests/dp/tasks/dp_e
 */
-
 
 #include <bits/stdc++.h>
 #define FI first
@@ -126,12 +121,12 @@ const ll MODBASE = 1000000007LL;
 const int INF = 0x3f3f3f3f;
 
 const int MAXN = 110;
-const int MAXW = 100010;
+const int MAXV = 100010;
 const int MAXK = 16;
 const int MAXQ = 200010;
 
 int n, W, w[MAXN], v[MAXN];
-ll dp[MAXW];
+ll dp[MAXV];
 
 int main() {
     ios::sync_with_stdio(0);
@@ -139,18 +134,22 @@ int main() {
     cin >> n >> W;
     FOR(i,1,n) cin >> w[i] >> v[i];
 
-    FOR(i,0,W) dp[i] = -1;
+    FOR(i,1,100000) dp[i] = -1;
     dp[0] = 0;
 
     FOR(i,1,n) {
-        FORE(j,W,w[i]) {
-            if (dp[j-w[i]] == -1) continue;
-            dp[j] = max(dp[j], dp[j-w[i]] + v[i]);
+        FORE(j,100000,v[i]) {
+            if (dp[j - v[i]] == -1) continue;
+            if (dp[j] == -1) dp[j] = dp[j - v[i]] + w[i];
+            else dp[j] = min(dp[j], dp[j - v[i]] + w[i]);
         }
     }
 
-    ll res = 0;
-    FOR(i,0,W) res = max(res, dp[i]);
-    cout << res;
+    FORE(i,100000,0) {
+        if (dp[i] != -1 && dp[i] <= W) {
+            cout << i;
+            break;
+        }
+    }
     return 0;
 }
