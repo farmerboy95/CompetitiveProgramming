@@ -18,7 +18,9 @@
         - Space complexity:
             + O(n * 2^n) if we use 2D array dp
             + We see that dp[i] only depends on dp[i-1], so we can store 2 rows of dp, so the
-            space complexity is O(2^n)
+            space complexity is O(2^n). Another thing is that, each man i corresponds to
+            a number of mask j, we don't even need to use 2 rows of dp but just one row, because
+            the states are not overlapping.
         - Please note that the code denote things from 0 to n-1.
 */
 
@@ -181,17 +183,16 @@ int main() {
     dp[0] = 1;
 
     FOR(i,0,n-1) {
-        vmi tmp(1<<n, 0);
         FOR(mask,0,(1<<n)-1) {
             if (pct(mask) != i) continue;
             FOR(j,0,n-1) {
                 if (a[i][j] && (mask & (1<<j)) == 0) {
-                    tmp[mask | (1<<j)] += dp[mask];
+                    dp[mask | (1<<j)] += dp[mask];
                 }
             }
         }
-        swap(dp, tmp);
     }
+
 
     cout << int(dp[(1<<n)-1]);
     return 0;
