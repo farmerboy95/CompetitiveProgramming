@@ -8,7 +8,7 @@
         - There are 2 cases here:
             + Length i-1 already satisfied the condition, here dp[i] += dp[i-1] * m (because
             we have m choices of color)
-            + There is a segment from i-k+1 to k of the same color and it's the first one
+            + There is a segment from i-k+1 to i of the same color and it's the first one
             of strip length i, here dp[i] += (number of non-satisfied strip length i-k and the 
             last color is not the color we are going to paint for the segment from i-k+1 to k) * m
         - The number of non-satisfied strip length i-k is x = (i-k)^m - dp[i-k], but how can we find
