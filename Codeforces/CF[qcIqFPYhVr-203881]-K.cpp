@@ -5,7 +5,7 @@
     Idea:
         - Firstly count the number of value a[i] in the array, putting into cnt[a[i]]
         - Let dp[mask] = number of OR sum x that mask & x = x. We will use SOS DP
-        to calculate. Initially dp[mask] = 2^cnt[mask].
+        to calculate. Initially dp[mask] = 2^cnt[mask]-1.
         - Then when doing SOS DP, the number of OR sum in the new state would be
         whether dp[mask], dp[mask ^ (1<<i)] or combining them.
         - At the end, we need to transform dp[mask] into number of OR sum equal to
