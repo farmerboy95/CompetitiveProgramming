@@ -1666,5 +1666,48 @@
             "};"
         ],
         "description": "Suffix Array"
+    },
+    "Hashing": {
+        "prefix": "zzStringHashing",
+        "body": [
+            "// StringHash — 0-indexed polynomial rolling hash",
+            "// Single: StringHash sh; sh.init(s); ll h = sh.query(l, r);",
+            "// Double: DoubleHash dh; dh.init(s); pl h = dh.query(l, r);",
+            "",
+            "struct StringHash {",
+            "    ll mod;",
+            "    vl pw, h;",
+            "",
+            "    void init(const string &s, ll bas = 131, ll p = 1e9 + 7, int off = 'a' - 1) {",
+            "        mod = p;",
+            "        int n = SZ(s);",
+            "        pw.assign(n + 1, 1);",
+            "        h.resize(n);",
+            "        FOR(i, 1, n) pw[i] = pw[i - 1] * bas % mod;",
+            "        h[0] = s[0] - off;",
+            "        FOR(i, 1, n - 1) h[i] = (h[i - 1] * bas + s[i] - off) % mod;",
+            "    }",
+            "",
+            "    ll query(int l, int r) {",
+            "        if (!l) return h[r];",
+            "        return (h[r] - h[l - 1] * pw[r - l + 1] % mod + mod * mod) % mod;",
+            "    }",
+            "};",
+            "",
+            "struct DoubleHash {",
+            "    StringHash h1, h2;",
+            "",
+            "    void init(const string &s, ll b1 = 131, ll m1 = 1e9 + 7,",
+            "              ll b2 = 137, ll m2 = 1e9 + 9, int off = 'a' - 1) {",
+            "        h1.init(s, b1, m1, off);",
+            "        h2.init(s, b2, m2, off);",
+            "    }",
+            "",
+            "    pl query(int l, int r) {",
+            "        return {h1.query(l, r), h2.query(l, r)};",
+            "    }",
+            "};"
+        ],
+        "description": "String Hashing"
     }
 }
