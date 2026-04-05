@@ -2,7 +2,7 @@
 
 ## Tìm xâu con trong một xâu khác
 
-Input: Một văn bản t và một xâu s, 
+Input: Một văn bản t và một xâu s. 
 
 Output: Vị trí của tất cả các lần xuất hiện của xâu s trong văn bản t.
 
@@ -53,3 +53,19 @@ Solution:
 - Gọi k là số lượng xâu con khác nhau hiện tại trong s, và ta thêm ký tự c vào cuối s. Rõ ràng một số xâu con mới kết thúc bằng c sẽ xuất hiện. Ta muốn đếm các xâu con mới này mà chúng chưa từng xuất hiện trước đó.
 - Ta lấy xâu t = s + c và đảo ngược lại. Giờ bài toán trở thành tính xem có bao nhiêu tiền tố không xuất hiện ở bất kỳ đâu khác.
 - O(|s|^2)
+
+## Tìm xâu con trong một xâu khác có chứa wildcard
+
+Link: https://codeforces.com/contest/808/problem/G
+
+Input: Một văn bản t và một xâu s, t có chứa các ký tự wildcard (match ký tự nào cũng được), s thì không
+
+Output: Số lượng lớn nhất có thể mà s nằm trong t.
+
+Solution:
+- KMP trên xâu s -> pi[i] = độ dài tiền tố dài nhất mà cũng là hậu tố của s[0..i], không tính chính xâu s[0..i]
+- Gọi dp[i][j] = số lần lớn nhất có thể mà s nằm trong đoạn t[0..i-1] mà lần cuối cùng đang match dở dang s[0..j-1] với t[i-j..i-1].
+- Với mỗi bước, ta cần phải thử s[j] với t[i], có 2 trường hợp:
+    + s[j] == t[i] (nghĩa là trùng hoặc t[i] là wildcard), ta có thể đi đến dp[i+1][j+1] (khi j < |s|-1) hoặc dp[i+1][pi[j]] (khi j = |s|-1)
+    + s[j] != t[i] (không trùng hoặc t[i] là wildcard nhưng ta không match nó với s[j]), ta có thể đi đến dp[i][pi[j-1]] (khi j > 0) hoặc dp[i+1][0] (khi j = 0), nhớ duyệt ngược lại để không tính nhiều lần.
+- O(|s| * |t|)

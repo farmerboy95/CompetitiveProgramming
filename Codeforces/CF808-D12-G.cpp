@@ -5,8 +5,8 @@
     Idea:
         - Build prefix function (KMP) for string s
         - dp[i][j] = maximum number of non-overlapping occurrences of s in t[0..i-1]
-        such that the last occurrence ends at position i-1 and the matching s has 
-        length j
+        such that the last occurrence (partially) ends at position i-1 and the 
+        matching prefix in s has length j
         - At each step, we need to check two cases
             - Match current character with s[j], if matched, we can go to 
             dp[i+1][j+1] (if j < m-1) or dp[i+1][pi[j]] (if j = m-1)
